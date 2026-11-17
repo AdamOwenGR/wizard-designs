@@ -14,7 +14,7 @@
     { label: 'Doors & windows', title: 'Doors & windows',         sub: 'Add doors and windows, then click one to change it.' },
     { label: 'Exterior',        title: 'Exterior',                sub: 'Cladding, roof, decking and the garden around it.' },
     { label: 'Interior',        title: 'Interior',                sub: 'Rooms, finishes, fittings and furniture.' },
-    { label: 'Plan',            title: 'Floor & electrical plan', sub: 'Sockets, switches, lights and services on the plan.' },
+    { label: 'Electrics',       title: 'Electrics',               sub: 'Sockets, switches, lights and services on the plan.' },
     { label: 'Delivery',        title: 'Delivery & install',      sub: 'Where it is going and how we get it there.' },
     { label: 'Summary',         title: 'Summary',                 sub: 'Your price, specification and next steps.' }
   ];
@@ -34,14 +34,15 @@
   const now = new Date();
   $('#saved').textContent = `Saved locally ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-  /* ---------- Cladding (G-Range sample prices from staging, relative to Redwood) ---------- */
+  /* ---------- Cladding (G-Range sample prices from staging, relative to standard Redwood).
+     Each group is listed cheapest first. ---------- */
   const CLADDING = [
     { group: 'Timber' },
-    { key: 'redwood',         name: 'Redwood',          img: 'Redwood_D.jpg',         price: 0 },
-    { key: 'honey',           name: 'Honey redwood',    img: 'Honey_D.jpg',           price: 595.33 },
-    { key: 'cedar',           name: 'Cedar',            img: 'Cedar_D.jpg',           price: 2870.92 },
+    { key: 'redwood',         name: 'Redwood',          img: 'Redwood_D.jpg',         price: 0, standard: true },
     { key: 'redwood-slatted', name: 'Slatted redwood',  img: 'Redwood_Slatted_D.jpg', price: 0 },
+    { key: 'honey',           name: 'Honey redwood',    img: 'Honey_D.jpg',           price: 595.33 },
     { key: 'honey-slatted',   name: 'Slatted honey',    img: 'Honey_Slatted_D.jpg',   price: 595.33 },
+    { key: 'cedar',           name: 'Cedar',            img: 'Cedar_D.jpg',           price: 2870.92 },
     { group: 'Composite' },
     { key: 'composite-oak',   name: 'Composite oak',    img: 'Composite_Oak_D.jpg',   price: 1913.29 },
     { key: 'composite-black', name: 'Composite black',  img: 'Composite_D.jpg',       price: 2227.64 },
@@ -53,24 +54,21 @@
   const claddingByKey = k => CLADDING.find(c => c.key === k);
   let cladding = 'redwood';
 
-  const signed = n => {
-    const v = Math.round(n);
-    return v === 0 ? 'Same price' : (v > 0 ? '+' : '−') + fmt(Math.abs(v));
-  };
+  // Price against the standard cladding: "Included", "£0" or "+£595"
+  const cladPrice = c => c.standard ? 'Included' : Math.round(c.price) === 0 ? '£0' : '+' + fmt(c.price);
 
   function renderCladding() {
-    const chosen = claddingByKey(cladding);
     $('#clad-list').innerHTML = CLADDING.map(c => {
       if (c.group) return `<div class="clad-group" role="presentation">${c.group}</div>`;
-      const on = c.key === cladding, diff = c.price - chosen.price;
+      const on = c.key === cladding, label = cladPrice(c);
       const thumb = c.img
         ? `<img src="img/cladding/${c.img}" alt="" loading="lazy" width="56" height="56">`
         : `<span class="swatch swatch-${c.swatch}"></span>`;
       return `<button type="button" class="clad-row${on ? ' on' : ''}" role="radio" aria-checked="${on}" data-key="${c.key}"
-                aria-label="${c.name}, ${on ? 'chosen' : signed(diff).replace('−', 'minus ')}">
+                aria-label="${c.name}, ${label}${on ? ', chosen' : ''}">
           <span class="clad-thumb">${thumb}</span>
           <span class="clad-name">${c.name}</span>
-          <span class="clad-price${on ? ' is-chosen' : diff < -0.5 ? ' is-less' : Math.abs(diff) < 0.5 ? ' is-same' : ''}">${on ? 'Chosen' : signed(diff)}</span>
+          <span class="clad-price${c.standard ? ' is-included' : Math.round(c.price) === 0 ? ' is-zero' : ''}${on ? ' is-chosen' : ''}">${label}</span>
         </button>`;
     }).join('');
   }

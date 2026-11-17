@@ -598,8 +598,8 @@ svg { display: block; }
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.clad-price.is-same { font-weight: 500; color: var(--ui-muted); }
-.clad-price.is-less { color: var(--gr-green-accessible); }
+.clad-price.is-zero { font-weight: 500; color: var(--ui-muted); }
+.clad-price.is-included { color: var(--gr-green-accessible); }
 .clad-price.is-chosen {
   display: inline-flex; align-items: center; gap: 6px;
   color: var(--gr-green-accessible);
