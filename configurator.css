@@ -13,7 +13,9 @@
   --ease: cubic-bezier(.2, .8, .2, 1);
 
   --top-h: 60px;
-  --step-h: 76px;
+  /* top of the 3D view, from the top down: step bar, view toolbar, then the scene */
+  --tools-top: 85px;   /* below the 63px step bar + gap */
+  --scene-top: 145px;  /* top edge of the 3D scene area, below the view toolbar */
   --panel-w: 440px;
 }
 
@@ -44,11 +46,10 @@ svg { display: block; }
 .app {
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--panel-w);
-  grid-template-rows: var(--top-h) minmax(0, 1fr) var(--step-h);
+  grid-template-rows: var(--top-h) minmax(0, 1fr);
   grid-template-areas:
     "top    top"
-    "viewer panel"
-    "steps  panel";
+    "viewer panel";
   height: 100vh;
   height: 100dvh;
 }
@@ -192,7 +193,6 @@ svg { display: block; }
    ===================================================================== */
 .viewer {
   grid-area: viewer;
-  grid-row: 2 / 4; /* runs under the floating step bar */
   position: relative;
   min-width: 0;
   background:
@@ -201,11 +201,11 @@ svg { display: block; }
 }
 .viewer-toolbar {
   position: absolute;
-  top: 12px; left: 12px; right: 12px;
+  top: var(--tools-top); left: 12px; right: 12px;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  z-index: 1;
+  z-index: 2; /* toolbar tooltips sit above the step bar */
   pointer-events: none;
 }
 .tool-group {
@@ -335,7 +335,7 @@ svg { display: block; }
 
 .viewer-placeholder {
   position: absolute;
-  inset: 72px 24px calc(var(--step-h) + 12px);
+  inset: var(--scene-top) 24px 24px;
   border: 2px dashed #d3d0c9;
   border-radius: 16px;
   display: grid;
@@ -356,12 +356,14 @@ svg { display: block; }
 /* Same look as the wizard's collapsed (compact) range / model bars:
    a floating white card with chip-style items, green ring + tick on selection. */
 .stepbar {
-  grid-area: steps;
+  /* floats across the top of the 3D view, above the view toolbar */
+  grid-area: viewer;
+  align-self: start;
   z-index: 1;
   display: flex;
   align-items: center;
   gap: 6px;
-  margin: 0 12px 12px;
+  margin: 12px 12px 0;
   padding: 8px 8px 8px 10px;
   background: #fff;
   border: 1px solid var(--gr-stone);
@@ -399,8 +401,8 @@ svg { display: block; }
 .steps li { flex: 0 0 auto; display: flex; }
 .step {
   flex: 0 0 auto;
-  display: flex; align-items: center; gap: 10px;
-  padding: 5px 14px 5px 5px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 10px 5px 5px;
   border: 1px solid transparent;
   border-radius: 10px;
   background: transparent;
@@ -440,6 +442,8 @@ svg { display: block; }
   transition: transform .25s cubic-bezier(.34, 1.4, .64, 1);
 }
 .step.done::after { transform: scale(1); }
+/* no empty tick space on steps that aren't done yet */
+.step:not(.done)::after { flex-basis: 0; width: 0; margin-left: -8px; }
 
 /* Not enough room for every label: the current step and its neighbours keep theirs */
 @container (max-width: 1260px) {
@@ -667,12 +671,14 @@ svg { display: block; }
   body { overflow: auto; }
   .app {
     grid-template-columns: 1fr;
-    grid-template-rows: var(--top-h) 52vh var(--step-h) auto;
-    grid-template-areas: "top" "viewer" "steps" "panel";
+    grid-template-rows: var(--top-h) 60vh auto;
+    grid-template-areas: "top" "viewer" "panel";
     height: auto;
   }
   .topbar .pill-btn, .topbar .icon-btn, .chip-demo, .design-chip .dc-size { display: none; }
   .panel { border-left: 0; }
   .panel-foot { position: sticky; bottom: 0; }
-  .viewer-placeholder { inset: 110px 12px calc(var(--step-h) + 8px); }
+  :root { --tools-top: 79px; --scene-top: 177px; }
+  .viewer-placeholder { inset: var(--scene-top) 12px 12px; }
+  .stepbar { margin: 8px 12px 0; padding-left: 6px; padding-right: 6px; }
 }
