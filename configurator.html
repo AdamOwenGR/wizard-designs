@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Green Retreats – Configurator (prototype shell)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="configurator.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ TOP BAR ============ -->
+  <header class="topbar">
+    <div class="tb-left">
+      <a class="brand" href="index.html" aria-label="Green Retreats configurator, restart">
+        <img src="https://cdn.staging.configurator.co.uk/greenretreats/assets/static-bfe14561963d/brand/green-retreats-logo-colour.svg" alt="Green Retreats" width="120" height="21">
+      </a>
+      <span class="tb-divider" aria-hidden="true"></span>
+      <span class="tb-label">Configurator</span>
+      <span class="chip chip-demo">Demo · sample prices</span>
+      <div class="design-chip">
+        <a class="dc-part dc-model" id="dc-model" href="index.html" title="Change the style">—</a>
+        <a class="dc-part dc-size" id="dc-size" href="index.html" title="Change the size">—</a>
+      </div>
+    </div>
+    <div class="tb-right">
+      <span class="tb-saved" id="saved">Saved locally</span>
+      <button type="button" class="pill-btn" id="finance-top">Finance from <strong id="finance-top-amt">—</strong> /month</button>
+      <div class="seg seg-sm" role="group" aria-label="Units">
+        <button type="button" class="on" aria-pressed="true">m</button>
+        <button type="button" aria-pressed="false">ft</button>
+      </div>
+      <button type="button" class="btn btn-primary btn-sm">Save</button>
+      <button type="button" class="icon-btn" aria-label="Undo"><svg viewBox="0 0 20 20"><path d="M8 5 4 9l4 4M4.5 9H12a4 4 0 0 1 0 8h-2" /></svg></button>
+      <button type="button" class="icon-btn" aria-label="Redo"><svg viewBox="0 0 20 20"><path d="m12 5 4 4-4 4M15.5 9H8a4 4 0 0 0 0 8h2" /></svg></button>
+      <button type="button" class="icon-btn" aria-label="Reset this design"><svg viewBox="0 0 20 20"><path d="M16 10a6 6 0 1 1-1.8-4.3M16 3.5v3.2h-3.2" /></svg></button>
+      <button type="button" class="menu-btn"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 5.5h14M3 10h14M3 14.5h14" /></svg>Menu</button>
+    </div>
+  </header>
+
+  <!-- ============ 3D VIEW (reserved space) ============ -->
+  <section class="viewer" aria-label="3D view">
+    <div class="viewer-toolbar">
+      <div class="tool-group">
+        <button type="button" class="tool on">3D</button>
+        <button type="button" class="tool">Plan</button>
+        <button type="button" class="tool">Elevations <span class="caret" aria-hidden="true"></span></button>
+      </div>
+      <div class="tool-group">
+        <button type="button" class="tool on">Outside</button>
+        <button type="button" class="tool">Roof off</button>
+        <button type="button" class="tool">Inside</button>
+      </div>
+      <div class="tool-group">
+        <button type="button" class="tool">Camera <span class="caret" aria-hidden="true"></span></button>
+        <button type="button" class="tool">Show <span class="caret" aria-hidden="true"></span></button>
+      </div>
+      <div class="tool-group">
+        <button type="button" class="tool">Photo</button>
+        <button type="button" class="tool">AR</button>
+      </div>
+    </div>
+
+    <div class="viewer-placeholder">
+      <svg viewBox="0 0 120 70" aria-hidden="true"><path d="M8 62h104M18 62V26h84v36M14 26h92l-6-8H20z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><rect x="34" y="34" width="30" height="28" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M49 34v28" stroke="currentColor" stroke-width="1.5"/><rect x="74" y="36" width="16" height="12" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      <span>3D view</span>
+    </div>
+  </section>
+
+  <!-- ============ STEP BAR ============ -->
+  <nav class="stepbar" aria-label="Steps">
+    <button type="button" class="step-arrow" id="step-prev" aria-label="Back"><svg viewBox="0 0 20 20"><path d="m12 5-5 5 5 5" /></svg></button>
+    <ol class="steps" id="steps"></ol>
+    <button type="button" class="step-arrow step-next" id="step-next" aria-label="Next"><svg viewBox="0 0 20 20"><path d="m8 5 5 5-5 5" /></svg></button>
+  </nav>
+
+  <!-- ============ RIGHT PANEL ============ -->
+  <aside class="panel" aria-label="Options">
+    <div class="panel-head">
+      <div class="ph-row">
+        <span class="ph-step" id="ph-step">Step 1 of 8</span>
+        <button type="button" class="link-btn">Other options <span class="caret" aria-hidden="true"></span></button>
+      </div>
+      <h1 class="ph-title" id="ph-title">—</h1>
+      <p class="ph-sub" id="ph-sub"></p>
+    </div>
+
+    <div class="panel-tools">
+      <div class="seg" role="group" aria-label="Mode">
+        <a class="seg-item" href="index.html">Wizard</a>
+        <button type="button" class="seg-item on" aria-pressed="true">Essentials</button>
+        <button type="button" class="seg-item" aria-pressed="false">Full configurator</button>
+      </div>
+      <input type="search" class="search" placeholder="Search"aria-label="Search all options">
+    </div>
+
+    <div class="panel-body" id="panel-body">
+      <div class="body-placeholder" id="body-placeholder">Options for this step</div>
+    </div>
+
+    <div class="panel-foot">
+      <div class="pf-row">
+        <span class="pf-label">Order total (sample price)</span>
+        <span class="pf-vat" id="pf-vat">—</span>
+      </div>
+      <div class="pf-row pf-row-price">
+        <strong class="pf-price" id="pf-price">—</strong>
+        <span class="chip chip-demo">Demo price</span>
+      </div>
+      <button type="button" class="pill-btn pf-finance">Finance from <strong id="finance-foot-amt">—</strong> /month</button>
+      <div class="pf-actions">
+        <button type="button" class="btn btn-outline">Breakdown</button>
+        <button type="button" class="btn btn-outline" id="vat-toggle" aria-pressed="false">Ex. VAT</button>
+        <button type="button" class="btn btn-primary" id="summary-btn">Summary</button>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<script src="data.js"></script>
+<script src="configurator.js"></script>
+</body>
+</html>

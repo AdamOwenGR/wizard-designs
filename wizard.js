@@ -319,14 +319,10 @@
 
   el.reset.addEventListener('click', reset);
 
-  let toastTimer;
   el.configure.addEventListener('click', () => {
     if (!state.size) return;
-    const m = modelById(state.model);
-    el.toast.textContent = `Prototype ends here — would open the configurator with ${m.name}, ${state.size.wl} × ${state.size.dl}m (${fmt(state.size.price)}).`;
-    el.toast.hidden = false;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { el.toast.hidden = true; }, 4000);
+    const q = new URLSearchParams({ model: state.model, r: state.size.r, c: state.size.c });
+    location.href = `configurator.html?${q}`;
   });
 
   /* ---------- Init ---------- */
