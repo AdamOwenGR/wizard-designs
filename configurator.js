@@ -40,7 +40,7 @@
     { group: 'Timber' },
     { key: 'redwood',         name: 'Redwood',          img: 'Redwood_D.jpg',         price: 0, standard: true },
     { key: 'redwood-slatted', name: 'Slatted redwood',  img: 'Redwood_Slatted_D.jpg', price: 0 },
-    { key: 'honey',           name: 'Honey redwood',    img: 'Honey_D.jpg',           price: 595.33 },
+    { key: 'honey',           name: 'Honey',            img: 'Honey_D.jpg',           price: 595.33 },
     { key: 'honey-slatted',   name: 'Slatted honey',    img: 'Honey_Slatted_D.jpg',   price: 595.33 },
     { key: 'cedar',           name: 'Cedar',            img: 'Cedar_D.jpg',           price: 2870.92 },
     { group: 'Composite' },
@@ -49,7 +49,7 @@
     { key: 'composite-grey',  name: 'Composite grey',   img: 'Composite_Grey_D.jpg',  price: 2227.64 },
     { key: 'composite-cedar', name: 'Composite cedar',  img: 'Composite_Cedar_D.jpg', price: 2471.32 },
     { group: 'Metal' },
-    { key: 'standing-seam',   name: 'Standing seam charcoal', swatch: 'seam',         price: 3507.67 }
+    { key: 'standing-seam',   name: 'Standing seam', swatch: 'seam',         price: 3507.67 }
   ];
   const claddingByKey = k => CLADDING.find(c => c.key === k);
   let cladding = 'redwood';
