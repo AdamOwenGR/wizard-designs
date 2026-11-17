@@ -103,6 +103,7 @@ svg { display: block; }
 .pill-btn:hover { background: var(--ui-selected-bg); }
 
 .icon-btn {
+  position: relative;
   width: 34px; height: 34px;
   display: grid; place-items: center;
   border: 0; border-radius: 50%;
@@ -238,7 +239,7 @@ svg { display: block; }
 .tool:focus-visible { outline: 2px solid var(--gr-plum); outline-offset: 1px; }
 
 /* Name tooltip (below the button, after a short hover delay) */
-.tool::after {
+.tool::after, .icon-btn[data-tip]::after {
   content: attr(data-tip);
   position: absolute;
   top: calc(100% + 8px);
@@ -256,7 +257,8 @@ svg { display: block; }
   transition: opacity .12s, translate .12s;
   z-index: 5;
 }
-.tool:hover::after, .tool:focus-visible::after {
+.tool:hover::after, .tool:focus-visible::after,
+.icon-btn[data-tip]:hover::after, .icon-btn[data-tip]:focus-visible::after {
   opacity: 1;
   translate: -50% 0;
   transition-delay: .35s;
