@@ -54,6 +54,7 @@ img { display: block; }
   border-left: 1px solid var(--gr-stone);
   box-shadow: -4px 0 24px rgba(40,42,38,.04);
   z-index: 2;
+  view-transition-name: sidebar; /* morphs into the configurator's options panel */
 }
 .cart-top {
   display: flex;
@@ -501,6 +502,8 @@ table.sizes {
 /* =====================================================================
    VIEW TRANSITIONS (the slide + shrink choreography)
    ===================================================================== */
+@view-transition { navigation: auto; } /* cross-page transition into the configurator */
+
 ::view-transition-old(root),
 ::view-transition-new(root) { animation: none; }
 
