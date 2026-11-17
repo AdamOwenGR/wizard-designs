@@ -175,13 +175,16 @@ svg { display: block; }
 .dc-model { font-weight: 700; }
 .dc-size { border-left: 1px solid var(--gr-stone); color: var(--ui-muted); }
 .tb-saved { font-size: 12px; color: var(--ui-muted); white-space: nowrap; }
+.menu-btn[aria-expanded="true"] { background: var(--gr-neutral-100); }
 .menu-btn {
   display: inline-flex; align-items: center; gap: 8px;
-  height: 34px; padding: 0 8px;
-  border: 0; background: none;
+  height: 34px; padding: 0 10px 0 8px;
+  border: 0; border-radius: 8px; background: none;
   font-size: 15px;
   cursor: pointer;
+  transition: background .2s;
 }
+.menu-btn:hover { background: var(--gr-neutral-50); }
 
 /* =====================================================================
    3D VIEW (placeholder)
@@ -264,8 +267,10 @@ svg { display: block; }
 
 /* ---------- Toolbar dropdown menu ---------- */
 .menu {
-  position: absolute;
-  z-index: 6;
+  position: fixed;
+  z-index: 50;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
   min-width: 220px;
   padding: 6px;
   background: #fff;
@@ -276,6 +281,8 @@ svg { display: block; }
   animation: menu-in .16s var(--ease);
 }
 .menu[hidden] { display: none; }
+.menu.from-right { transform-origin: top right; }
+.menu-sep { height: 1px; margin: 6px 4px; background: var(--gr-neutral-100); }
 @keyframes menu-in { from { opacity: 0; transform: translateY(-4px) scale(.98); } }
 .menu-heading {
   margin: 6px 10px 4px;

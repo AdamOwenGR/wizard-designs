@@ -128,7 +128,20 @@
     studio: '<path d="M3 3.5h14v7.25A5.75 5.75 0 0 1 11.25 16.5H3z"/><path d="M3 12.5h7"/>',
     grid: '<rect x="3" y="3" width="14" height="14" rx="1.5"/><path d="M7.67 3v14M12.33 3v14M3 7.67h14M3 12.33h14"/>',
     garden: '<path d="M10 17.5v-6"/><path d="M10 11.5c-3.25 0-5-1.9-5-4.25S7.25 2.5 10 2.5s5 2.4 5 4.75-1.75 4.25-5 4.25z"/><path d="M3 17.5h14"/>',
-    pan: '<path d="M10 2.5v15M2.5 10h15M7.75 4.75 10 2.5l2.25 2.25M7.75 15.25 10 17.5l2.25-2.25M4.75 7.75 2.5 10l2.25 2.25M15.25 7.75 17.5 10l-2.25 2.25"/>'
+    pan: '<path d="M10 2.5v15M2.5 10h15M7.75 4.75 10 2.5l2.25 2.25M7.75 15.25 10 17.5l2.25-2.25M4.75 7.75 2.5 10l2.25 2.25M15.25 7.75 17.5 10l-2.25 2.25"/>',
+    // main Menu
+    showroom: '<path d="M3 8.5 4.5 3.5h11L17 8.5zM4 8.5V17h12V8.5"/><path d="M8.25 17v-4.5h3.5V17"/>',
+    folder: '<path d="M2.5 6A1.5 1.5 0 0 1 4 4.5h3.5l1.5 2h7A1.5 1.5 0 0 1 17.5 8v7a1.5 1.5 0 0 1-1.5 1.5H4A1.5 1.5 0 0 1 2.5 15z"/>',
+    cloud: '<path d="M6.5 15.5H5.25a3.5 3.5 0 0 1-.4-6.98 5 5 0 0 1 9.55-1.27A3.75 3.75 0 0 1 14.75 15.5H13.5"/><path d="M10 10.25v6.5M7.75 12.5 10 10.25l2.25 2.25"/>',
+    copy: '<rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M13 7V4.5A1.5 1.5 0 0 0 11.5 3h-7A1.5 1.5 0 0 0 3 4.5v7A1.5 1.5 0 0 0 4.5 13H7"/>',
+    compare: '<path d="M4 7h12M13 4l3 3-3 3M16 13H4M7 10l-3 3 3 3"/>',
+    reset: '<path d="M16 10a6 6 0 1 1-1.8-4.3M16 3.5v3.2h-3.2"/>',
+    newdoc: '<rect x="4" y="2.5" width="12" height="15" rx="2"/><path d="M10 7v6M7 10h6"/>',
+    pdf: '<path d="M5 2.5h7l3.5 3.5v11.5H5z"/><path d="M12 2.5V6h3.5M7.5 10h5M7.5 13h5"/>',
+    pound: '<path d="M13.25 5.25a3.25 3.25 0 0 0-5.75 2.1V15.5M5.5 15.5h9M5.5 10.75h6"/>',
+    link: '<path d="M8.5 11.5a3 3 0 0 0 4.25 0l2.5-2.5A3 3 0 0 0 11 4.75l-1 1"/><path d="M11.5 8.5a3 3 0 0 0-4.25 0l-2.5 2.5A3 3 0 0 0 9 15.25l1-1"/>',
+    ruler: '<rect x="2.5" y="7" width="15" height="6" rx="1"/><path d="M5.5 7v2M8.5 7v3M11.5 7v2M14.5 7v3"/>',
+    help: '<circle cx="10" cy="10" r="7.5"/><path d="M7.75 7.9a2.25 2.25 0 1 1 3.25 2c-.6.3-1 .8-1 1.5v.35M10 14.1v.15"/>'
   };
 
   // type: 'check' (on/off), 'radio' (one per group), 'action' (does something, closes the menu).
@@ -162,19 +175,38 @@
       { label: 'Garden',      icon: 'garden', type: 'radio', group: 'setting' },
       { heading: 'Mouse' },
       { label: 'Pan (drag slides the view)', icon: 'pan', type: 'check' }
+    ] },
+    // Top-bar Menu (items as on the live configurator; units moved here from the old m/ft toggle)
+    app: { align: 'right', items: [
+      { label: 'Showroom designs',   icon: 'showroom', type: 'action' },
+      { label: 'My designs',         icon: 'folder',   type: 'action' },
+      { label: 'Save to my account', icon: 'cloud',    type: 'action' },
+      { label: 'Copy design reference', icon: 'copy',  type: 'action' },
+      { label: 'Compare designs',    icon: 'compare',  type: 'action' },
+      { sep: true },
+      { label: 'Reset this design',  icon: 'reset',    type: 'action' },
+      { label: 'Start a new design', icon: 'newdoc',   type: 'action' },
+      { sep: true },
+      { label: 'Specification / PDF', icon: 'pdf',     type: 'action' },
+      { label: 'Finance calculator', icon: 'pound',    type: 'action' },
+      { label: 'Copy share link',    icon: 'link',     type: 'action' },
+      { sep: true },
+      { label: 'Show feet and inches', icon: 'ruler',  type: 'check' },
+      { label: 'Help and shortcuts', icon: 'help',     type: 'action' }
     ] }
   };
 
-  const viewer = $('.viewer');
   const menuEl = document.createElement('div');
   menuEl.className = 'menu';
   menuEl.setAttribute('role', 'menu');
   menuEl.hidden = true;
-  viewer.appendChild(menuEl);
+  document.body.appendChild(menuEl);
   let openBtn = null;
 
   function renderMenu(key) {
-    menuEl.innerHTML = MENUS[key].items.map((it, i) => it.heading
+    menuEl.innerHTML = MENUS[key].items.map((it, i) => it.sep
+      ? '<div class="menu-sep" role="separator"></div>'
+      : it.heading
       ? `<div class="menu-heading" role="presentation">${it.heading}</div>`
       : `<button type="button" class="menu-item" data-i="${i}" tabindex="-1"
            role="${it.type === 'check' ? 'menuitemcheckbox' : it.type === 'radio' ? 'menuitemradio' : 'menuitem'}"
@@ -189,14 +221,17 @@
     if (openBtn) closeMenu(false);
     openBtn = btn;
     menuEl.dataset.menu = btn.dataset.menu;
-    menuEl.setAttribute('aria-label', btn.dataset.tip);
+    menuEl.setAttribute('aria-label', btn.dataset.tip || btn.textContent.trim());
     renderMenu(btn.dataset.menu);
-    const v = viewer.getBoundingClientRect(), b = btn.getBoundingClientRect();
+    const b = btn.getBoundingClientRect();
+    const right = MENUS[btn.dataset.menu].align === 'right';
+    menuEl.classList.toggle('from-right', right);
     menuEl.hidden = false;
-    // keep the menu inside the viewer on narrow screens
-    const left = Math.min(b.left - v.left, v.width - menuEl.offsetWidth - 8);
-    menuEl.style.left = `${Math.max(8, left)}px`;
-    menuEl.style.top = `${b.bottom - v.top + 8}px`;
+    // drop below the button, kept on screen
+    const w = menuEl.offsetWidth;
+    const left = right ? b.right - w : b.left;
+    menuEl.style.left = `${Math.max(8, Math.min(left, innerWidth - w - 8))}px`;
+    menuEl.style.top = `${b.bottom + 8}px`;
     btn.setAttribute('aria-expanded', 'true');
     menuEl.querySelector('.menu-item')?.focus({ preventScroll: true });
   }
