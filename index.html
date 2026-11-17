@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Green Retreats – Choose your building (wizard prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="wizard.css">
+</head>
+<body>
+<div class="layout">
+
+  <!-- ============ CART / SUMMARY SIDEBAR ============ -->
+  <aside class="cart" aria-label="Your building">
+    <div class="cart-top">
+      <img class="logo" src="https://cdn.staging.configurator.co.uk/greenretreats/assets/static-bfe14561963d/brand/green-retreats-logo-colour.svg" alt="Green Retreats" width="140" height="24">
+      <button type="button" class="link-btn" id="reset" hidden>Start again</button>
+    </div>
+
+    <div class="cart-body">
+      <p class="eyebrow" id="total-label">Your garden room</p>
+      <p class="total" aria-live="polite"><span class="total-from" id="total-from"></span><span id="total">—</span></p>
+      <p class="total-note" id="total-note">Pick a range to see prices</p>
+
+      <div class="cart-hero" id="hero">
+        <div class="hero-empty">
+          <svg viewBox="0 0 120 70" aria-hidden="true"><path d="M8 62h104M18 62V26h84v36M14 26h92l-6-8H20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="34" y="34" width="30" height="28" fill="none" stroke="currentColor" stroke-width="2"/><path d="M49 34v28" stroke="currentColor" stroke-width="2"/><rect x="74" y="36" width="16" height="12" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        </div>
+      </div>
+
+      <ul class="lines" id="lines">
+        <li class="line" data-step="range"></li>
+        <li class="line" data-step="model"></li>
+        <li class="line" data-step="size"></li>
+      </ul>
+    </div>
+
+    <div class="cart-foot">
+      <div class="sum-row">
+        <span>Base price</span>
+        <strong id="sum">—</strong>
+      </div>
+      <button type="button" class="btn-configure" id="configure" disabled>
+        <span>Configure</span>
+        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h11m-4-4 4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <p class="foot-note" id="foot-note">Choose a range, model and size to continue</p>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN WIZARD ============ -->
+  <main class="main">
+    <div class="main-inner">
+
+      <section class="sec" id="sec-range" style="view-transition-name: sec-range">
+        <header class="sec-head">
+          <span class="sec-label">Range</span>
+          <div class="sec-full">
+            <h1 class="sec-title">Choose your range</h1>
+            <p class="sec-sub">Five ranges, from simple garden rooms to annexes you can live in. Pick one to see its models.</p>
+          </div>
+        </header>
+        <div class="cards" id="range-cards"></div>
+      </section>
+
+      <section class="sec" id="sec-model" style="view-transition-name: sec-model" hidden>
+        <header class="sec-head">
+          <span class="sec-label">Model</span>
+          <div class="sec-full">
+            <h2 class="sec-title">Choose your model</h2>
+            <p class="sec-sub" id="model-sub"></p>
+          </div>
+        </header>
+        <div class="cards" id="model-cards"></div>
+      </section>
+
+      <section class="sec sec-size" id="sec-size" style="view-transition-name: sec-size" hidden>
+        <header class="sec-head">
+          <div class="sec-full">
+            <h2 class="sec-title">Choose your size</h2>
+            <p class="sec-sub">Width across the front, depth from front to back. Sample prices inc. VAT for the building with its standard specification; doors, windows and options are chosen next.</p>
+          </div>
+        </header>
+        <div class="size-frame">
+          <div class="size-scroll" id="size-scroll" tabindex="0" role="region" aria-label="Sizes and prices"></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="data.js"></script>
+<script src="wizard.js"></script>
+</body>
+</html>
