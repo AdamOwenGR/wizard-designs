@@ -29,10 +29,6 @@
     <div class="tb-right">
       <span class="tb-saved" id="saved">Saved locally</span>
       <button type="button" class="pill-btn" id="finance-top">Finance from <strong id="finance-top-amt">—</strong> /month</button>
-      <div class="seg seg-sm" role="group" aria-label="Units">
-        <button type="button" class="on" aria-pressed="true">m</button>
-        <button type="button" aria-pressed="false">ft</button>
-      </div>
       <button type="button" class="btn btn-primary btn-sm">Save</button>
       <button type="button" class="icon-btn" aria-label="Undo"><svg viewBox="0 0 20 20"><path d="M8 5 4 9l4 4M4.5 9H12a4 4 0 0 1 0 8h-2" /></svg></button>
       <button type="button" class="icon-btn" aria-label="Redo"><svg viewBox="0 0 20 20"><path d="m12 5 4 4-4 4M15.5 9H8a4 4 0 0 0 0 8h2" /></svg></button>
@@ -89,12 +85,11 @@
     </div>
 
     <div class="panel-tools">
-      <div class="seg" role="group" aria-label="Mode">
-        <a class="seg-item" href="index.html">Wizard</a>
-        <button type="button" class="seg-item on" aria-pressed="true">Essentials</button>
-        <button type="button" class="seg-item" aria-pressed="false">Full configurator</button>
-      </div>
-      <input type="search" class="search" placeholder="Search"aria-label="Search all options">
+      <label class="search">
+        <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.75" cy="8.75" r="5.25" /><path d="m12.75 12.75 4 4" /></svg>
+        <input type="search" id="search" placeholder="Search all options, e.g. solar" aria-label="Search all options" autocomplete="off">
+        <kbd class="search-kbd" aria-hidden="true">/</kbd>
+      </label>
     </div>
 
     <div class="panel-body" id="panel-body">

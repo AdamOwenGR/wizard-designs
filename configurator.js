@@ -70,6 +70,7 @@
     stepBtns.forEach((b, i) => {
       b.classList.toggle('on', i === current);
       b.classList.toggle('done', done.has(i) && i !== current);
+      b.classList.toggle('near', Math.abs(i - current) === 1);
       b.toggleAttribute('aria-current', i === current);
     });
     $('#ph-step').textContent = `Step ${current + 1} of ${STEPS.length}`;
@@ -87,15 +88,22 @@
   $('#summary-btn').addEventListener('click', () => goTo(STEPS.length - 1));
 
   /* ---------- Simple toggles (visual only) ---------- */
-  document.querySelectorAll('.tool-group, .seg').forEach(group => {
+  document.querySelectorAll('.tool-group').forEach(group => {
     group.addEventListener('click', e => {
       const b = e.target.closest('button');
       if (!b || b.querySelector('.caret') || b.parentElement !== group) return;
-      // view-mode groups (3D/Plan, Outside/Roof off/Inside, units, mode) are single-select
+      // view-mode groups (3D/Plan, Outside/Roof off/Inside) are single-select
       const exclusive = [...group.children].some(x => x.classList.contains('on'));
       if (!exclusive) return;
       [...group.children].forEach(x => { x.classList.toggle('on', x === b); if (x.tagName === 'BUTTON') x.setAttribute('aria-pressed', x === b); });
     });
+  });
+
+  /* "/" jumps to search */
+  const search = $('#search');
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) { e.preventDefault(); search.focus(); }
+    else if (e.key === 'Escape' && document.activeElement === search) { search.value = ''; search.blur(); }
   });
 
   renderPrice();

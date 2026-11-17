@@ -13,7 +13,7 @@
   --ease: cubic-bezier(.2, .8, .2, 1);
 
   --top-h: 60px;
-  --step-h: 64px;
+  --step-h: 76px;
   --panel-w: 440px;
 }
 
@@ -113,29 +113,6 @@ svg { display: block; }
 .icon-btn:hover { background: var(--gr-stone); }
 .icon-btn svg, .menu-btn svg, .step-arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 
-.seg {
-  display: inline-flex;
-  padding: 3px;
-  border-radius: 999px;
-  border: 1px solid var(--gr-stone);
-  background: #fff;
-}
-.seg > * {
-  border: 0;
-  background: none;
-  padding: 0 12px;
-  height: 30px;
-  display: inline-flex; align-items: center;
-  border-radius: 999px;
-  font-size: 13px;
-  cursor: pointer;
-  text-decoration: none;
-  white-space: nowrap;
-}
-.seg > *:hover { background: var(--gr-neutral-50); }
-.seg > .on { background: var(--ui-selected-bg); box-shadow: inset 0 0 0 1px var(--gr-green); font-weight: 600; }
-.seg-sm > * { height: 26px; padding: 0 10px; }
-
 .link-btn {
   background: none; border: 0; padding: 4px 0;
   font-size: 13px; cursor: pointer;
@@ -211,6 +188,7 @@ svg { display: block; }
    ===================================================================== */
 .viewer {
   grid-area: viewer;
+  grid-row: 2 / 4; /* runs under the floating step bar */
   position: relative;
   min-width: 0;
   background:
@@ -250,7 +228,7 @@ svg { display: block; }
 
 .viewer-placeholder {
   position: absolute;
-  inset: 72px 24px 24px;
+  inset: 72px 24px calc(var(--step-h) + 12px);
   border: 2px dashed #d3d0c9;
   border-radius: 16px;
   display: grid;
@@ -268,26 +246,33 @@ svg { display: block; }
 /* =====================================================================
    STEP BAR
    ===================================================================== */
+/* Same look as the wizard's collapsed (compact) range / model bars:
+   a floating white card with chip-style items, green ring + tick on selection. */
 .stepbar {
   grid-area: steps;
+  z-index: 1;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 0 12px;
+  gap: 6px;
+  margin: 0 12px 12px;
+  padding: 8px 8px 8px 10px;
   background: #fff;
-  border-top: 1px solid var(--gr-stone);
+  border: 1px solid var(--gr-stone);
+  border-radius: 14px;
+  box-shadow: var(--shadow-1);
   min-width: 0;
+  container-type: inline-size;
 }
 .step-arrow {
   flex: 0 0 auto;
   width: 40px; height: 40px;
   display: grid; place-items: center;
-  border: 0; border-radius: 50%;
-  background: var(--gr-neutral-100);
+  border: 0; border-radius: 10px;
+  background: transparent;
   cursor: pointer;
   transition: background .2s, opacity .2s;
 }
-.step-arrow:hover:not(:disabled) { background: var(--gr-stone); }
+.step-arrow:hover:not(:disabled) { background: var(--gr-neutral-50); }
 .step-arrow:disabled { opacity: .35; cursor: default; }
 .step-next { background: var(--gr-green-accessible); color: #fff; }
 .step-next:hover:not(:disabled) { background: var(--gr-plum); }
@@ -295,45 +280,67 @@ svg { display: block; }
 .steps {
   flex: 1;
   display: flex;
-  gap: 4px;
-  margin: 0; padding: 0;
+  gap: 6px;
+  margin: 0;
+  padding: 2px;
   list-style: none;
   overflow-x: auto;
   scrollbar-width: none;
   min-width: 0;
 }
+.steps li { flex: 0 0 auto; display: flex; }
 .step {
-  flex: 1 0 auto;
-  display: flex; align-items: center; gap: 8px;
-  height: 44px;
-  padding: 0 12px 0 8px;
-  border: 0; border-radius: 10px;
-  background: none;
-  font-size: 13px;
+  flex: 0 0 auto;
+  display: flex; align-items: center; gap: 10px;
+  padding: 5px 14px 5px 5px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  font-size: 14.5px;
+  font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
-  position: relative;
-  transition: background .2s;
+  /* no box-shadow transition: the green selected ring appears instantly */
+  transition: background .2s, border-color .2s;
 }
 .step:hover { background: var(--gr-neutral-50); }
+.step:focus-visible { outline: 3px solid var(--gr-plum); outline-offset: 2px; }
 .step-num {
-  width: 24px; height: 24px;
+  width: 30px; height: 30px;
   display: grid; place-items: center;
-  border-radius: 50%;
-  border: 1px solid var(--gr-stone);
-  font-size: 12px;
+  border-radius: 8px;
+  background: var(--gr-neutral-100);
+  font-size: 13px;
   font-weight: 600;
+  color: var(--ui-muted);
   flex: 0 0 auto;
 }
-.step.done .step-num { background: var(--ui-selected-bg); border-color: var(--gr-green); color: var(--gr-green-accessible); }
-.step.on { background: var(--ui-selected-bg); font-weight: 600; }
-.step.on .step-num { background: var(--gr-green-accessible); border-color: var(--gr-green-accessible); color: #fff; }
-.step.on::after {
+.step.on {
+  background: var(--ui-selected-bg);
+  box-shadow: inset 0 0 0 1.5px var(--gr-green);
+}
+.step.on .step-num { background: var(--gr-green-accessible); color: #fff; }
+/* Tick space is always reserved so a chip's width never changes; it pops in once a step is done */
+.step::after {
   content: "";
-  position: absolute;
-  left: 8px; right: 8px; bottom: 3px;
-  height: 3px; border-radius: 3px;
-  background: var(--gr-green);
+  flex: 0 0 16px;
+  width: 16px; height: 16px;
+  margin-left: -2px;
+  border-radius: 50%;
+  background: var(--gr-green) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='m4.5 8.2 2.3 2.3 4.7-4.9' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% no-repeat;
+  transform: scale(0);
+  transition: transform .25s cubic-bezier(.34, 1.4, .64, 1);
+}
+.step.done::after { transform: scale(1); }
+
+/* Not enough room for every label: the current step and its neighbours keep theirs */
+@container (max-width: 1260px) {
+  .step:not(.on):not(.near) .step-label { display: none; }
+  .step:not(.on):not(.near) { gap: 8px; padding-right: 10px; }
+}
+@container (max-width: 760px) {
+  .step.near .step-label { display: none; }
+  .step.near { gap: 8px; padding-right: 10px; }
 }
 
 /* =====================================================================
@@ -361,22 +368,60 @@ svg { display: block; }
 .ph-sub { margin: 2px 0 0; font-size: 13.5px; color: var(--ui-muted); }
 
 .panel-tools {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 4px 20px 14px;
+  padding: 6px 20px 16px;
   border-bottom: 1px solid var(--gr-neutral-100);
 }
 .search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 46px;
+  padding: 0 12px 0 44px;
+  background: var(--gr-neutral-50);
+  border: 1px solid var(--gr-stone);
+  border-radius: 12px;
+  cursor: text;
+  transition: background .2s, border-color .2s, box-shadow .2s;
+}
+.search:hover { border-color: #cfccc6; }
+.search:focus-within {
+  background: #fff;
+  border-color: var(--gr-green);
+  box-shadow: 0 0 0 3px rgba(104, 127, 106, .18);
+}
+.search-icon {
+  position: absolute;
+  left: 15px;
+  width: 19px; height: 19px;
+  fill: none; stroke: var(--ui-muted); stroke-width: 1.7; stroke-linecap: round;
+  transition: stroke .2s;
+}
+.search:focus-within .search-icon { stroke: var(--gr-green-accessible); }
+.search input {
   flex: 1;
   min-width: 0;
-  height: 38px;
-  padding: 0 14px;
-  border: 1px solid var(--gr-stone);
-  border-radius: 999px;
-  font-size: 13px;
+  height: 100%;
+  border: 0;
+  background: none;
+  font-size: 14.5px;
+  outline: none;
 }
-.search:focus { outline: 2px solid var(--gr-green); outline-offset: 1px; }
+.search input::placeholder { color: #8f928b; }
+.search-kbd {
+  flex: 0 0 auto;
+  display: grid; place-items: center;
+  min-width: 22px; height: 22px;
+  padding: 0 6px;
+  border: 1px solid var(--gr-stone);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: #fff;
+  font: 600 12px/1 Inter, system-ui, sans-serif;
+  color: var(--ui-muted);
+  transition: opacity .2s;
+}
+.search:focus-within .search-kbd,
+.search input:not(:placeholder-shown) ~ .search-kbd { opacity: 0; }
 
 .panel-body {
   flex: 1;
@@ -421,12 +466,9 @@ svg { display: block; }
    ===================================================================== */
 @media (max-width: 1200px) {
   .tb-label, .tb-divider, .tb-saved { display: none; }
-  .step { padding-right: 8px; }
 }
 @media (max-width: 1050px) {
   :root { --panel-w: 380px; }
-  .step-label { display: none; }
-  .step.on .step-label { display: inline; }
 }
 @media (max-width: 800px) {
   body { overflow: auto; }
@@ -436,8 +478,8 @@ svg { display: block; }
     grid-template-areas: "top" "viewer" "steps" "panel";
     height: auto;
   }
-  .topbar .pill-btn, .topbar .seg, .topbar .icon-btn, .chip-demo, .design-chip .dc-size { display: none; }
+  .topbar .pill-btn, .topbar .icon-btn, .chip-demo, .design-chip .dc-size { display: none; }
   .panel { border-left: 0; }
   .panel-foot { position: sticky; bottom: 0; }
-  .viewer-placeholder { inset: 110px 12px 12px; }
+  .viewer-placeholder { inset: 110px 12px calc(var(--step-h) + 8px); }
 }
