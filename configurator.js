@@ -34,10 +34,66 @@
   const now = new Date();
   $('#saved').textContent = `Saved locally ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
+  /* ---------- Cladding (G-Range sample prices from staging, relative to Redwood) ---------- */
+  const CLADDING = [
+    { group: 'Timber' },
+    { key: 'redwood',         name: 'Redwood',          img: 'Redwood_D.jpg',         price: 0 },
+    { key: 'honey',           name: 'Honey redwood',    img: 'Honey_D.jpg',           price: 595.33 },
+    { key: 'cedar',           name: 'Cedar',            img: 'Cedar_D.jpg',           price: 2870.92 },
+    { key: 'redwood-slatted', name: 'Slatted redwood',  img: 'Redwood_Slatted_D.jpg', price: 0 },
+    { key: 'honey-slatted',   name: 'Slatted honey',    img: 'Honey_Slatted_D.jpg',   price: 595.33 },
+    { group: 'Composite' },
+    { key: 'composite-oak',   name: 'Composite oak',    img: 'Composite_Oak_D.jpg',   price: 1913.29 },
+    { key: 'composite-black', name: 'Composite black',  img: 'Composite_D.jpg',       price: 2227.64 },
+    { key: 'composite-grey',  name: 'Composite grey',   img: 'Composite_Grey_D.jpg',  price: 2227.64 },
+    { key: 'composite-cedar', name: 'Composite cedar',  img: 'Composite_Cedar_D.jpg', price: 2471.32 },
+    { group: 'Metal' },
+    { key: 'standing-seam',   name: 'Standing seam charcoal', swatch: 'seam',         price: 3507.67 }
+  ];
+  const claddingByKey = k => CLADDING.find(c => c.key === k);
+  let cladding = 'redwood';
+
+  const signed = n => {
+    const v = Math.round(n);
+    return v === 0 ? 'Same price' : (v > 0 ? '+' : '−') + fmt(Math.abs(v));
+  };
+
+  function renderCladding() {
+    const chosen = claddingByKey(cladding);
+    $('#clad-list').innerHTML = CLADDING.map(c => {
+      if (c.group) return `<div class="clad-group" role="presentation">${c.group}</div>`;
+      const on = c.key === cladding, diff = c.price - chosen.price;
+      const thumb = c.img
+        ? `<img src="img/cladding/${c.img}" alt="" loading="lazy" width="56" height="56">`
+        : `<span class="swatch swatch-${c.swatch}"></span>`;
+      return `<button type="button" class="clad-row${on ? ' on' : ''}" role="radio" aria-checked="${on}" data-key="${c.key}"
+                aria-label="${c.name}, ${on ? 'chosen' : signed(diff).replace('−', 'minus ')}">
+          <span class="clad-thumb">${thumb}</span>
+          <span class="clad-name">${c.name}</span>
+          <span class="clad-price${on ? ' is-chosen' : diff < -0.5 ? ' is-less' : Math.abs(diff) < 0.5 ? ' is-same' : ''}">${on ? 'Chosen' : signed(diff)}</span>
+        </button>`;
+    }).join('');
+  }
+
+  $('#clad-list').addEventListener('click', e => {
+    const row = e.target.closest('.clad-row'); if (!row || row.dataset.key === cladding) return;
+    cladding = row.dataset.key;
+    renderCladding(); renderPrice();
+    $(`#clad-list .clad-row[data-key="${cladding}"]`).focus({ preventScroll: true });
+  });
+  // arrow keys move through the list like a radio group
+  $('#clad-list').addEventListener('keydown', e => {
+    if (!['ArrowDown', 'ArrowUp'].includes(e.key)) return;
+    const rows = [...$('#clad-list').querySelectorAll('.clad-row')];
+    const i = rows.indexOf(document.activeElement); if (i < 0) return;
+    e.preventDefault();
+    rows[(i + (e.key === 'ArrowDown' ? 1 : rows.length - 1)) % rows.length].focus();
+  });
+
   /* ---------- Price / VAT ---------- */
   let exVat = false;
   function renderPrice() {
-    const inc = design.price, ex = inc / 1.2;
+    const inc = design.price + claddingByKey(cladding).price, ex = inc / 1.2;
     $('#pf-price').textContent = fmt(exVat ? ex : inc);
     $('#pf-vat').textContent = exVat ? `ex. VAT · ${fmt(inc)} inc. VAT` : `inc. VAT · ${fmt(ex)} ex. VAT`;
     const monthly = fmt(inc * FINANCE_RATE);
@@ -77,6 +133,9 @@
     $('#ph-title').textContent = s.title;
     $('#ph-sub').textContent = s.sub;
     $('#body-placeholder').textContent = `${s.title} options`;
+    const exterior = s.label === 'Exterior';
+    $('#body-placeholder').hidden = exterior;
+    $('#clad-section').hidden = !exterior;
     $('#step-prev').disabled = current === 0;
     $('#step-next').disabled = current === STEPS.length - 1;
     stepBtns[current].scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -290,6 +349,7 @@
     else if (e.key === 'Escape' && document.activeElement === search) { search.value = ''; search.blur(); }
   });
 
+  renderCladding();
   renderPrice();
   renderSteps();
 })();
