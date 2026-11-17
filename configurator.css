@@ -385,9 +385,10 @@ svg { display: block; }
 .steps {
   flex: 1;
   display: flex;
+  justify-content: space-between; /* spread steps evenly; falls back to the start when they overflow */
   gap: 6px;
   margin: 0;
-  padding: 2px;
+  padding: 2px 10px;
   list-style: none;
   overflow-x: auto;
   scrollbar-width: none;
