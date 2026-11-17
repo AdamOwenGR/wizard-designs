@@ -247,9 +247,9 @@ img { display: block; }
    ===================================================================== */
 .main { min-width: 0; }
 .main-inner {
-  max-width: 1120px;
+  max-width: 1480px;
   margin: 0 auto;
-  padding: 44px 40px 80px;
+  padding: 40px 44px 80px;
 }
 
 .sec { margin-bottom: 40px; }
@@ -271,7 +271,7 @@ img { display: block; }
 /* ---------- Full cards ---------- */
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(228px, 1fr));
   gap: 16px;
 }
 .card {
