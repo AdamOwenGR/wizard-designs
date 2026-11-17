@@ -639,7 +639,18 @@ svg { display: block; }
   letter-spacing: -.01em;
   font-variant-numeric: tabular-nums;
 }
-.pf-finance { margin-bottom: 10px; }
+.pf-finance {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-bottom: 10px;
+  padding-right: 10px;
+}
+.pf-chevron {
+  width: 16px; height: 16px;
+  margin-left: 2px;
+  fill: none; stroke: var(--gr-green-accessible); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+  transition: transform .2s var(--ease);
+}
+.pf-finance:hover .pf-chevron { transform: translateX(3px); }
 .pf-actions { display: flex; gap: 8px; }
 .pf-actions .btn-primary { margin-left: auto; padding: 0 22px; }
 
