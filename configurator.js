@@ -95,7 +95,6 @@
     $('#pf-price').textContent = fmt(exVat ? ex : inc);
     $('#pf-vat').textContent = exVat ? `ex. VAT · ${fmt(inc)} inc. VAT` : `inc. VAT · ${fmt(ex)} ex. VAT`;
     const monthly = fmt(inc * FINANCE_RATE);
-    $('#finance-top-amt').textContent = monthly;
     $('#finance-foot-amt').textContent = monthly;
     $('#vat-toggle').setAttribute('aria-pressed', exVat);
   }
