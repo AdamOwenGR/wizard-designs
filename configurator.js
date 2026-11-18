@@ -26,72 +26,23 @@
   const g = GRIDS[model.grid];
   let r = +params.get('r'), c = +params.get('c');
   if (!g.rows[r] || !g.rows[r][2][c]) { r = Math.min(1, g.rows.length - 1); c = Math.min(2, g.wl.length - 1); }
-  const design = { name: model.name, wl: g.wl[c], dl: g.rows[r][0], price: g.rows[r][2][c] };
+  const design = {};
+  function setDesign() {
+    Object.assign(design, { model, name: model.name, g, r, c, wl: g.wl[c], dl: g.rows[r][0], wmm: g.wmm[c], dmm: g.rows[r][1], price: g.rows[r][2][c] });
+    $('#dc-model').textContent = design.name;
+    $('#dc-size').textContent = `${design.wl}m × ${design.dl}m`;
+  }
+  setDesign();
 
   /* ---------- Top bar ---------- */
-  $('#dc-model').textContent = design.name;
-  $('#dc-size').textContent = `${design.wl}m × ${design.dl}m`;
   const now = new Date();
   $('#saved').textContent = `Saved locally ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
-  /* ---------- Cladding (G-Range sample prices from staging, relative to standard Redwood).
-     Each group is listed cheapest first. ---------- */
-  const CLADDING = [
-    { group: 'Timber' },
-    { key: 'redwood',         name: 'Redwood',          img: 'Redwood_D.jpg',         price: 0, standard: true },
-    { key: 'redwood-slatted', name: 'Slatted redwood',  img: 'Redwood_Slatted_D.jpg', price: 0 },
-    { key: 'honey',           name: 'Honey',            img: 'Honey_D.jpg',           price: 595.33 },
-    { key: 'honey-slatted',   name: 'Slatted honey',    img: 'Honey_Slatted_D.jpg',   price: 595.33 },
-    { key: 'cedar',           name: 'Cedar',            img: 'Cedar_D.jpg',           price: 2870.92 },
-    { group: 'Composite' },
-    { key: 'composite-oak',   name: 'Composite oak',    img: 'Composite_Oak_D.jpg',   price: 1913.29 },
-    { key: 'composite-black', name: 'Composite black',  img: 'Composite_D.jpg',       price: 2227.64 },
-    { key: 'composite-grey',  name: 'Composite grey',   img: 'Composite_Grey_D.jpg',  price: 2227.64 },
-    { key: 'composite-cedar', name: 'Composite cedar',  img: 'Composite_Cedar_D.jpg', price: 2471.32 },
-    { group: 'Metal' },
-    { key: 'standing-seam',   name: 'Standing seam', swatch: 'seam',         price: 3507.67 }
-  ];
-  const claddingByKey = k => CLADDING.find(c => c.key === k);
-  let cladding = 'redwood';
-
-  // Price against the standard cladding: "Included", "£0" or "+£595"
-  const cladPrice = c => c.standard ? 'Included' : Math.round(c.price) === 0 ? '£0' : '+' + fmt(c.price);
-
-  function renderCladding() {
-    $('#clad-list').innerHTML = CLADDING.map(c => {
-      if (c.group) return `<div class="clad-group" role="presentation">${c.group}</div>`;
-      const on = c.key === cladding, label = cladPrice(c);
-      const thumb = c.img
-        ? `<img src="img/cladding/${c.img}" alt="" loading="lazy" width="56" height="56">`
-        : `<span class="swatch swatch-${c.swatch}"></span>`;
-      return `<button type="button" class="clad-row${on ? ' on' : ''}" role="radio" aria-checked="${on}" data-key="${c.key}"
-                aria-label="${c.name}, ${label}${on ? ', chosen' : ''}">
-          <span class="clad-thumb">${thumb}</span>
-          <span class="clad-name">${c.name}</span>
-          <span class="clad-price${c.standard ? ' is-included' : Math.round(c.price) === 0 ? ' is-zero' : ''}${on ? ' is-chosen' : ''}">${label}</span>
-        </button>`;
-    }).join('');
-  }
-
-  $('#clad-list').addEventListener('click', e => {
-    const row = e.target.closest('.clad-row'); if (!row || row.dataset.key === cladding) return;
-    cladding = row.dataset.key;
-    renderCladding(); renderPrice();
-    $(`#clad-list .clad-row[data-key="${cladding}"]`).focus({ preventScroll: true });
-  });
-  // arrow keys move through the list like a radio group
-  $('#clad-list').addEventListener('keydown', e => {
-    if (!['ArrowDown', 'ArrowUp'].includes(e.key)) return;
-    const rows = [...$('#clad-list').querySelectorAll('.clad-row')];
-    const i = rows.indexOf(document.activeElement); if (i < 0) return;
-    e.preventDefault();
-    rows[(i + (e.key === 'ArrowDown' ? 1 : rows.length - 1)) % rows.length].focus();
-  });
-
   /* ---------- Price / VAT ---------- */
   let exVat = false;
+  const total = () => design.price + Panel.extras();
   function renderPrice() {
-    const inc = design.price + claddingByKey(cladding).price, ex = inc / 1.2;
+    const inc = total(), ex = inc / 1.2;
     $('#pf-price').textContent = fmt(exVat ? ex : inc);
     $('#pf-vat').textContent = exVat ? `ex. VAT · ${fmt(inc)} inc. VAT` : `inc. VAT · ${fmt(ex)} ex. VAT`;
     const monthly = fmt(inc * FINANCE_RATE);
@@ -129,10 +80,8 @@
     $('#ph-step').textContent = `Step ${current + 1} of ${STEPS.length}`;
     $('#ph-title').textContent = s.title;
     $('#ph-sub').textContent = s.sub;
-    $('#body-placeholder').textContent = `${s.title} options`;
-    const exterior = s.label === 'Exterior';
-    $('#body-placeholder').hidden = exterior;
-    $('#clad-section').hidden = !exterior;
+    Panel.show(s.label);
+    $('#panel-body').scrollTop = 0;
     $('#step-prev').disabled = current === 0;
     $('#step-next').disabled = current === STEPS.length - 1;
     stepBtns[current].scrollIntoView({ block: 'nearest', inline: 'nearest' });
@@ -322,6 +271,7 @@
     else it.checked = !it.checked;
     menuEl.querySelectorAll('.menu-item[aria-checked]').forEach(m => m.setAttribute('aria-checked', !!items[+m.dataset.i].checked));
     if (key === 'elevations') syncElevations();
+    if (key === 'show') Panel.refresh();
     if (MENUS[key].closeOnPick) closeMenu();
   });
 
@@ -343,10 +293,29 @@
   const search = $('#search');
   document.addEventListener('keydown', e => {
     if (e.key === '/' && !/^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName)) { e.preventDefault(); search.focus(); }
-    else if (e.key === 'Escape' && document.activeElement === search) { search.value = ''; search.blur(); }
+    else if (e.key === 'Escape' && document.activeElement === search) { search.value = ''; Panel.filter(''); search.blur(); }
   });
+  search.addEventListener('input', () => { Panel.filter(search.value); $('#panel-body').scrollTop = 0; });
 
-  renderCladding();
+  /* ---------- Sidebar options (panel.js) ---------- */
+  const settingItems = () => MENUS.show.items.filter(i => i.group === 'setting');
+  Panel.init({
+    design: () => design,
+    total,
+    financeRate: FINANCE_RATE,
+    onChange: renderPrice,
+    setSize(nr, nc) {
+      if (nr != null) r = nr;
+      if (nc != null) c = nc;
+      if (!g.rows[r][2][c]) c = g.rows[r][2].findLastIndex(p => p > 0);   // keep a valid width for the depth
+      setDesign();
+    },
+    getSetting: () => settingItems().find(i => i.checked).label,
+    setSetting: label => settingItems().forEach(i => { i.checked = i.label === label; }),
+    goToStep: label => { search.value = ''; Panel.filter(''); goTo(STEPS.findIndex(s => s.label === label)); }
+  });
+  $('#breakdown-btn').addEventListener('click', () => { goTo(STEPS.length - 1); Panel.open('breakdown'); });
+
   renderPrice();
   renderSteps();
 })();
