@@ -92,17 +92,8 @@
     </div>
 
     <div class="panel-body" id="panel-body">
-      <div class="body-placeholder" id="body-placeholder">Options for this step</div>
-
-      <!-- Exterior: cladding -->
-      <section class="opt-section" id="clad-section" aria-labelledby="clad-title" hidden>
-        <header class="opt-head">
-          <h2 class="opt-title" id="clad-title">Cladding</h2>
-          <span class="opt-meta">All walls</span>
-        </header>
-        <div class="clad-list" id="clad-list" role="radiogroup" aria-labelledby="clad-title"></div>
-        <p class="opt-note">Indicative prices inc. VAT, compared with the standard Redwood.</p>
-      </section>
+      <!-- Options for the current step, drawn by panel.js -->
+      <div class="opts" id="opts"></div>
     </div>
 
     <div class="panel-foot">
@@ -116,7 +107,7 @@
       </div>
       <button type="button" class="pill-btn pf-finance">Finance from <strong id="finance-foot-amt">—</strong> /month<svg class="pf-chevron" viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5"/></svg></button>
       <div class="pf-actions">
-        <button type="button" class="btn btn-outline">Breakdown</button>
+        <button type="button" class="btn btn-outline" id="breakdown-btn">Breakdown</button>
         <button type="button" class="btn btn-outline" id="vat-toggle" aria-pressed="false">Ex. VAT</button>
         <button type="button" class="btn btn-primary" id="summary-btn">Summary</button>
       </div>
@@ -126,6 +117,7 @@
 </div>
 
 <script src="data.js"></script>
+<script src="panel.js"></script>
 <script src="configurator.js"></script>
 </body>
 </html>
